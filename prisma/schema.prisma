@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id         String       @id @default(cuid())
+  name       String
+  email      String       @unique
+  password   String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  CivilGuard CivilGuard[]
+}
+
+model CivilGuard {
+  id           String                @id @default(cuid())
+  name         String
+  account      Account               @relation(fields: [accountId], references: [id])
+  accountId    String
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  duties       CivilGuardsOnDuties[]
+  Department   Department?           @relation(fields: [departmentId], references: [id])
+  departmentId String?
+}
+
+enum DutyType {
+  PATROL
+  EVENT
+}
+
+model Duty {
+  id           String                @id @default(cuid())
+  name         String
+  description  String
+  startDate    DateTime              @default(now())
+  endDate      DateTime?
+  type         DutyType
+  civilGuards  CivilGuardsOnDuties[]
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  Department   Department?           @relation(fields: [departmentId], references: [id])
+  departmentId String?
+}
+
+model CivilGuardsOnDuties {
+  civilGuardId String
+  dutyId       String
+  civilGuard   CivilGuard @relation(fields: [civilGuardId], references: [id])
+  duty         Duty       @relation(fields: [dutyId], references: [id])
+
+  @@id([civilGuardId, dutyId])
+}
+
+model Department {
+  id          String       @id @default(cuid())
+  name        String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  duties      Duty[]
+  civilGuards CivilGuard[]
+}
