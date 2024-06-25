@@ -14,7 +14,8 @@ export class DepartmentsService {
         data: createDepartmentDto,
       });
     } catch (error) {
-      throw new BadRequestException(error.message);
+      console.error(error.message);
+      throw new BadRequestException('Error happened while creating the department');
     }
   }
 
@@ -22,7 +23,8 @@ export class DepartmentsService {
     try {
       return await this.prisma.department.findMany();
     } catch (error) {
-      throw new BadRequestException(error.message);
+      console.error(error.message);
+      throw new BadRequestException('Error happened while finding the departments');
     }
   }
 
@@ -34,7 +36,8 @@ export class DepartmentsService {
       }
       return department;
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      console.error(error.message);
+      throw new InternalServerErrorException('Error happened while trying to find the department');
     }
   }
 
@@ -45,7 +48,8 @@ export class DepartmentsService {
         data: updateDepartmentDto,
       });
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      console.error(error.message);
+      throw new InternalServerErrorException('Error happened while updating the department');
     }
   }
 
@@ -53,7 +57,8 @@ export class DepartmentsService {
     try {
       return await this.prisma.department.delete({ where: { id } });
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      console.error(error.message);
+      throw new InternalServerErrorException('Error happened while deleting the department');
     }
   }
 }
