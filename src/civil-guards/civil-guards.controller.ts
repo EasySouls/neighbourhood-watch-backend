@@ -1,8 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { CivilGuardsService } from './civil-guards.service';
 import { UpdateCivilGuardDto } from './dto/update-civil-guard.dto';
-import { CivilGuard, Prisma } from '@prisma/client';
 import { ApiTags } from '@nestjs/swagger';
+import { CivilGuard } from './entities/civil-guard.entity';
+import { CreateCivilGuardDto } from './dto/create-civil-guard.dto';
 
 @ApiTags('Civil Guards')
 @Controller('civilguards')
@@ -10,7 +11,7 @@ export class CivilGuardsController {
   constructor(private readonly civilGuardsService: CivilGuardsService) {}
 
   @Post()
-  create(@Body() createCivilGuardDto: Prisma.CivilGuardCreateInput): Promise<CivilGuard> {
+  create(@Body() createCivilGuardDto: CreateCivilGuardDto): Promise<CivilGuard> {
     return this.civilGuardsService.create(createCivilGuardDto);
   }
 
