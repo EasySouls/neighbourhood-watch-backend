@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CivilGuardsService } from './civil-guards.service';
 import { UpdateCivilGuardDto } from './dto/update-civil-guard.dto';
 import { CivilGuard, Prisma } from '@prisma/client';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Civil Guards')
 @Controller('civilguards')
 export class CivilGuardsController {
   constructor(private readonly civilGuardsService: CivilGuardsService) {}
