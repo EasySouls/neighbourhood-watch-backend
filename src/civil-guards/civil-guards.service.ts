@@ -1,18 +1,33 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { CivilGuard, Prisma } from '@prisma/client';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
+import { CreateCivilGuardDto } from './dto/create-civil-guard.dto';
+import { UpdateCivilGuardDto } from './dto/update-civil-guard.dto';
+import { CivilGuard } from './entities/civil-guard.entity';
 
 @Injectable()
 export class CivilGuardsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createCivilGuardDto: Prisma.CivilGuardCreateInput): Promise<CivilGuard> {
+  async create(createCivilGuardDto: CreateCivilGuardDto): Promise<CivilGuard> {
     try {
       return await this.prisma.civilGuard.create({
-        data: createCivilGuardDto,
+        data: {
+          name: createCivilGuardDto.name,
+          account: {
+            connect: {
+              id: createCivilGuardDto.accountId,
+            },
+          },
+          Department: {
+            connect: {
+              id: createCivilGuardDto.departmentId,
+            },
+          },
+        },
       });
     } catch (error) {
-      throw new BadRequestException(error.message);
+      console.error(error.message);
+      throw new InternalServerErrorException('Error happened while creating a new Civil Guard.');
     }
   }
 
@@ -20,7 +35,8 @@ export class CivilGuardsService {
     try {
       return await this.prisma.civilGuard.findMany();
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      console.error(error.message);
+      throw new InternalServerErrorException('Error happened while fetching Civil Guards.');
     }
   }
 
@@ -30,7 +46,8 @@ export class CivilGuardsService {
         where: { departmentId: departmentID },
       });
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      console.error(error.message);
+      throw new InternalServerErrorException('Error happened while fetching Civil Guards by department.');
     }
   }
 
@@ -49,7 +66,8 @@ export class CivilGuardsService {
         },
       });
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      console.error(error.message);
+      throw new InternalServerErrorException('Error happened while fetching Civil Guards on active duty.');
     }
   }
 
@@ -61,18 +79,20 @@ export class CivilGuardsService {
       }
       return civilGuard;
     } catch (error) {
-      throw new BadRequestException(error.message);
+      console.error(error.message);
+      throw new InternalServerErrorException(`Error happened while fetching a Civil Guard with id ${id}.`);
     }
   }
 
-  async update(id: string, updateCivilGuardDto: Prisma.CivilGuardUpdateInput): Promise<CivilGuard> {
+  async update(id: string, updateCivilGuardDto: UpdateCivilGuardDto): Promise<CivilGuard> {
     try {
       return await this.prisma.civilGuard.update({
         where: { id },
         data: updateCivilGuardDto,
       });
     } catch (error) {
-      throw new BadRequestException(error.message);
+      console.error(error.message);
+      throw new InternalServerErrorException(`Error happened while updating Civil Guard with id ${id}.`);
     }
   }
 
@@ -81,7 +101,8 @@ export class CivilGuardsService {
     try {
       return this.prisma.civilGuard.delete({ where: { id } });
     } catch (error) {
-      throw new BadRequestException(error.message);
+      console.error(error.message);
+      throw new InternalServerErrorException(`Error happened while deleting Civil Guard with id ${id}.`);
     }
   }
 }
