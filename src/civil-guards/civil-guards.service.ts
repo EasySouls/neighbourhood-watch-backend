@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CivilGuard, Prisma } from '@prisma/client';
+import { PrismaService } from 'nestjs-prisma';
 
 @Injectable()
 export class CivilGuardsService {
@@ -8,7 +8,7 @@ export class CivilGuardsService {
 
   async create(createCivilGuardDto: Prisma.CivilGuardCreateInput): Promise<CivilGuard> {
     try {
-      return this.prisma.civilGuard.create({
+      return await this.prisma.civilGuard.create({
         data: createCivilGuardDto,
       });
     } catch (error) {
@@ -18,7 +18,7 @@ export class CivilGuardsService {
 
   async findAll(): Promise<CivilGuard[]> {
     try {
-      return this.prisma.civilGuard.findMany();
+      return await this.prisma.civilGuard.findMany();
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
@@ -26,7 +26,7 @@ export class CivilGuardsService {
 
   async FindAllByDepartmentID(departmentID: string): Promise<CivilGuard[]> {
     try {
-      return this.prisma.civilGuard.findMany({
+      return await this.prisma.civilGuard.findMany({
         where: { departmentId: departmentID },
       });
     } catch (error) {
@@ -36,7 +36,7 @@ export class CivilGuardsService {
 
   async findAllOnActiveDutyByDepartmentID(departmentID: string): Promise<CivilGuard[]> {
     try {
-      return this.prisma.civilGuard.findMany({
+      return await this.prisma.civilGuard.findMany({
         where: {
           departmentId: departmentID,
           duties: {
@@ -55,9 +55,11 @@ export class CivilGuardsService {
 
   async findOneByID(id: string): Promise<CivilGuard | null> {
     try {
-      return this.prisma.civilGuard.findUnique({
-        where: { id },
-      });
+      const civilGuard = await this.prisma.civilGuard.findUnique({ where: { id } });
+      if (!civilGuard) {
+        throw new NotFoundException('Civil Guard not found');
+      }
+      return civilGuard;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -65,7 +67,7 @@ export class CivilGuardsService {
 
   async update(id: string, updateCivilGuardDto: Prisma.CivilGuardUpdateInput): Promise<CivilGuard> {
     try {
-      return this.prisma.civilGuard.update({
+      return await this.prisma.civilGuard.update({
         where: { id },
         data: updateCivilGuardDto,
       });
