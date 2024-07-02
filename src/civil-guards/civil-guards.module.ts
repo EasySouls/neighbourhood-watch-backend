@@ -5,5 +5,6 @@ import { CivilGuardsController } from './civil-guards.controller';
 @Module({
   controllers: [CivilGuardsController],
   providers: [CivilGuardsService],
+  exports: [CivilGuardsService],
 })
 export class CivilGuardsModule {}
