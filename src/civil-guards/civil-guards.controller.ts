@@ -22,7 +22,7 @@ export class CivilGuardsController {
 
   @Get('department/:departmentID')
   findAllByDepartmentID(@Param('departmentID') departmentID: string): Promise<CivilGuard[]> {
-    return this.civilGuardsService.FindAllByDepartmentID(departmentID);
+    return this.civilGuardsService.findAllByDepartmentID(departmentID);
   }
 
   @Get('department/:departmentID/active')

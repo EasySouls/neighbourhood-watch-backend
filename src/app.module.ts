@@ -5,9 +5,11 @@ import { CivilGuardsModule } from './civil-guards/civil-guards.module';
 import { PrismaModule } from 'nestjs-prisma';
 import { DepartmentsModule } from './departments/departments.module';
 import { DutiesModule } from './duties/duties.module';
+import { AuthModule } from './auth/auth.module';
+import { AccountsModule } from './accounts/accounts.module';
 
 @Module({
-  imports: [PrismaModule.forRoot({ isGlobal: true }), CivilGuardsModule, DepartmentsModule, DutiesModule],
+  imports: [PrismaModule.forRoot({ isGlobal: true }), CivilGuardsModule, DepartmentsModule, DutiesModule, AuthModule, AccountsModule],
   controllers: [AppController],
   providers: [AppService],
 })

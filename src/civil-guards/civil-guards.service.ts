@@ -3,6 +3,7 @@ import { PrismaService } from 'nestjs-prisma';
 import { CreateCivilGuardDto } from './dto/create-civil-guard.dto';
 import { UpdateCivilGuardDto } from './dto/update-civil-guard.dto';
 import { CivilGuard } from './entities/civil-guard.entity';
+import { randomInt } from 'crypto';
 
 @Injectable()
 export class CivilGuardsService {
@@ -23,6 +24,7 @@ export class CivilGuardsService {
               id: createCivilGuardDto.departmentId,
             },
           },
+          authCode: randomInt(100000, 999999),
         },
       });
     } catch (error) {
@@ -40,7 +42,7 @@ export class CivilGuardsService {
     }
   }
 
-  async FindAllByDepartmentID(departmentID: string): Promise<CivilGuard[]> {
+  async findAllByDepartmentID(departmentID: string): Promise<CivilGuard[]> {
     try {
       return await this.prisma.civilGuard.findMany({
         where: { departmentId: departmentID },
@@ -81,6 +83,15 @@ export class CivilGuardsService {
     } catch (error) {
       console.error(error.message);
       throw new InternalServerErrorException(`Error happened while fetching a Civil Guard with id ${id}.`);
+    }
+  }
+
+  async findOneByAuthCode(code: number): Promise<CivilGuard | null> {
+    try {
+      return await this.prisma.civilGuard.findUnique({ where: { authCode: code } });
+    } catch (error) {
+      console.error(error.message);
+      throw new InternalServerErrorException(`Error happened while fetching a Civil Guard with authCode ${code}.`);
     }
   }
 

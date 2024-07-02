@@ -6,8 +6,8 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Drop the tables before seeding the database
-  await prisma.account.deleteMany();
   await prisma.civilGuard.deleteMany();
+  await prisma.account.deleteMany();
   await prisma.civilGuardsOnDuties.deleteMany();
   await prisma.department.deleteMany();
 
@@ -24,14 +24,12 @@ async function main() {
   }
   await prisma.department.createMany({ data: departments });
 
-  // Accounts with CIvil Guards, connected to departments
+  // Accounts with Civil Guards, connected to departments
   for (let i = 0; i < 30; i++) {
     const email = faker.internet.email();
     const name = faker.person.fullName();
-    await prisma.account.upsert({
-      where: { email: email },
-      update: {},
-      create: {
+    await prisma.account.create({
+      data: {
         id: faker.string.uuid(),
         name: name,
         email: email,
@@ -45,6 +43,7 @@ async function main() {
               Department: { connect: { id: departments[randomInt(9)].id } },
               id: faker.string.uuid(),
               createdAt: new Date(),
+              authCode: randomInt(999999),
             },
           ],
         },
