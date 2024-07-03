@@ -1,4 +1,5 @@
-import { IsDate, IsOptional, IsString, IsUUID } from 'class-validator';
+import { Role } from '@prisma/client';
+import { IsDate, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CivilGuard {
   @IsUUID()
@@ -8,8 +9,12 @@ export class CivilGuard {
   @IsString()
   name: string;
 
+  @IsEnum(Role, { each: true })
+  roles: Role[];
+
   @IsString()
-  accountId: string;
+  @IsOptional()
+  accountId?: string;
 
   @IsString()
   departmentId: string;

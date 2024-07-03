@@ -21,7 +21,6 @@ export class AccountsService {
         email: data.email,
         password: data.password,
         name: data.name,
-        role: data.role,
         civilGuards: { connect: { id: data.civilGuardId } },
       },
     });

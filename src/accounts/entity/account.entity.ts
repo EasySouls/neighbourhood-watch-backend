@@ -1,5 +1,4 @@
-import { Role } from '@prisma/client';
-import { IsDate, IsEmail, IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class Account {
   @IsString()
@@ -14,9 +13,6 @@ export class Account {
 
   @IsString()
   password: string;
-
-  @IsEnum(Role)
-  role: Role;
 
   @IsDate()
   createdAt: Date;

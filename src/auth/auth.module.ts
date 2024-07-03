@@ -4,6 +4,8 @@ import { AuthController } from './auth.controller';
 import { AccountsModule } from 'src/accounts/accounts.module';
 import { JwtModule } from '@nestjs/jwt';
 import { CivilGuardsModule } from 'src/civil-guards/civil-guards.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './roles.guard';
 
 @Module({
   imports: [
@@ -15,7 +17,13 @@ import { CivilGuardsModule } from 'src/civil-guards/civil-guards.module';
       signOptions: { expiresIn: '1d' },
     }),
   ],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
   controllers: [AuthController],
   exports: [AuthService],
 })

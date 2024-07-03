@@ -14,11 +14,12 @@ export class CivilGuardsService {
       return await this.prisma.civilGuard.create({
         data: {
           name: createCivilGuardDto.name,
-          account: {
-            connect: {
-              id: createCivilGuardDto.accountId,
-            },
-          },
+          // account: {
+          //   connect: {
+          //     id: createCivilGuardDto.accountId,
+          //   },
+          // },
+          roles: createCivilGuardDto.roles,
           Department: {
             connect: {
               id: createCivilGuardDto.departmentId,
@@ -84,6 +85,14 @@ export class CivilGuardsService {
       console.error(error.message);
       throw new InternalServerErrorException(`Error happened while fetching a Civil Guard with id ${id}.`);
     }
+  }
+
+  async findOneByAccountID(accountID: string): Promise<CivilGuard | null> {
+    const civilGuard = await this.prisma.civilGuard.findFirst({ where: { accountId: accountID } });
+    if (!civilGuard) {
+      throw new NotFoundException('Civil Guard not found');
+    }
+    return civilGuard;
   }
 
   async findOneByAuthCode(code: number): Promise<CivilGuard | null> {

@@ -55,7 +55,6 @@ export class AuthService {
       email,
       password,
       civilGuardId: civilGuard.id,
-      role: 'CIVIL_GUARD',
     };
     try {
       const account = await this.accountsService.create(accountOptions);
