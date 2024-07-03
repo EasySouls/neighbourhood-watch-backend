@@ -7,9 +7,10 @@ import { DepartmentsModule } from './departments/departments.module';
 import { DutiesModule } from './duties/duties.module';
 import { AuthModule } from './auth/auth.module';
 import { AccountsModule } from './accounts/accounts.module';
+import { CaslModule } from './casl/casl.module';
 
 @Module({
-  imports: [PrismaModule.forRoot({ isGlobal: true }), CivilGuardsModule, DepartmentsModule, DutiesModule, AuthModule, AccountsModule],
+  imports: [PrismaModule.forRoot({ isGlobal: true }), CivilGuardsModule, DepartmentsModule, DutiesModule, AuthModule, AccountsModule, CaslModule],
   controllers: [AppController],
   providers: [AppService],
 })
