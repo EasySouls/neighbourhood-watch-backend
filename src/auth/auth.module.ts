@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { CivilGuardsModule } from 'src/civil-guards/civil-guards.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './roles.guard';
+import { AuthGuard } from './auth.guard';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { RolesGuard } from './roles.guard';
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
+    AuthGuard,
   ],
   controllers: [AuthController],
   exports: [AuthService],

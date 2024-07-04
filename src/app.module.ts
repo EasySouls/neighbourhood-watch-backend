@@ -10,7 +10,15 @@ import { AccountsModule } from './accounts/accounts.module';
 import { CaslModule } from './casl/casl.module';
 
 @Module({
-  imports: [PrismaModule.forRoot({ isGlobal: true }), CivilGuardsModule, DepartmentsModule, DutiesModule, AuthModule, AccountsModule, CaslModule],
+  imports: [
+    PrismaModule.forRoot({ isGlobal: true }),
+    CivilGuardsModule,
+    DepartmentsModule,
+    DutiesModule,
+    AuthModule,
+    AccountsModule,
+    CaslModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
