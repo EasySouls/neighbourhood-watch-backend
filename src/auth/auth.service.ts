@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { CivilGuardsService } from 'src/civil-guards/civil-guards.service';
@@ -26,6 +26,10 @@ export class AuthService {
   }
 
   async login(email: string, pass: string): Promise<{ access_token: string }> {
+    if (!email || !pass) {
+      throw new BadRequestException('Email and password are required');
+    }
+
     const account = await this.accountsService.findOneByEmail(email);
 
     if (!account) {
