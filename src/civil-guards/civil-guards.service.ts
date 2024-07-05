@@ -25,6 +25,7 @@ export class CivilGuardsService {
               id: createCivilGuardDto.departmentId,
             },
           },
+          // TODO - Format to 6 digits
           authCode: randomInt(100000, 999999),
         },
       });
