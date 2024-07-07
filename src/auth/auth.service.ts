@@ -4,6 +4,7 @@ import { AccountsService } from 'src/accounts/accounts.service';
 import { CivilGuardsService } from 'src/civil-guards/civil-guards.service';
 import { CreateAccountDto } from 'src/accounts/dto/create-account.dto';
 import { Role } from '@prisma/client';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -32,10 +33,10 @@ export class AuthService {
     };
   }
 
-  async login(email: string, pass: string): Promise<{ access_token: string }> {
-    if (!email || !pass) {
+  async login(email: string, password: string): Promise<{ access_token: string }> {
+    if (!email || !password) {
       this.logger.error(
-        'Email and password are required. Email: ' + email + ', Password: ' + pass,
+        'Email and password are required. Email: ' + email + ', Password: ' + password,
         'AuthService::login',
       );
       throw new BadRequestException('Email and password are required');
@@ -47,8 +48,11 @@ export class AuthService {
       throw new NotFoundException('Account not found');
     }
 
-    if (account.password !== pass) {
-      throw new UnauthorizedException('Incorrect email or password');
+    // Compare the given password with the hashed password
+    const isMatch = await bcrypt.compare(password, account.password);
+    if (!isMatch) {
+      this.logger.error(`Invalid credentials. Given password: ${password}`, 'AuthService::login');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     const payload = { sub: account.id, email: account.email };
@@ -73,10 +77,14 @@ export class AuthService {
       throw new NotFoundException('Civil Guard not found in AuthService::signUp');
     }
 
+    // Hashing the password
+    const saltRounds = 12;
+    const hash = await bcrypt.hash(password, saltRounds);
+
     const accountOptions: CreateAccountDto = {
       name: civilGuard.name,
       email,
-      password,
+      password: hash,
       civilGuardId: civilGuard.id,
     };
     try {

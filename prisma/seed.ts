@@ -24,6 +24,8 @@ async function main() {
   }
   await prisma.department.createMany({ data: departments });
 
+  // NOTE: The civil guards created here cannot be used to login, since the passwords are hashed, and the correct password is unknown
+
   // Accounts with Civil Guards, connected to departments
   for (let i = 0; i < 30; i++) {
     const email = faker.internet.email();
