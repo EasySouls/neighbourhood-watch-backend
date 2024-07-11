@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpCode, HttpStatus } from '@nestjs/common';
 import { CivilGuardsService } from './civil-guards.service';
 import { UpdateCivilGuardDto } from './dto/update-civil-guard.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -11,6 +11,7 @@ export class CivilGuardsController {
   constructor(private readonly civilGuardsService: CivilGuardsService) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   create(@Body() createCivilGuardDto: CreateCivilGuardDto): Promise<CivilGuard> {
     return this.civilGuardsService.create(createCivilGuardDto);
   }
@@ -31,8 +32,8 @@ export class CivilGuardsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<CivilGuard | null> {
-    return this.civilGuardsService.findOneByID(id);
+  findOne(@Param('id') id: string, @Query('complete') complete: boolean = false): Promise<CivilGuard | null> {
+    return this.civilGuardsService.findOneByID(id, complete);
   }
 
   @Patch(':id')

@@ -20,7 +20,7 @@ export class CivilGuardsService {
           //   },
           // },
           roles: createCivilGuardDto.roles,
-          Department: {
+          department: {
             connect: {
               id: createCivilGuardDto.departmentId,
             },
@@ -75,13 +75,28 @@ export class CivilGuardsService {
     }
   }
 
-  async findOneByID(id: string): Promise<CivilGuard | null> {
+  async findOneByID(id: string, complete: boolean): Promise<CivilGuard | null> {
     try {
-      const civilGuard = await this.prisma.civilGuard.findUnique({ where: { id } });
-      if (!civilGuard) {
-        throw new NotFoundException('Civil Guard not found');
+      if (complete) {
+        const completeCivilGuard = await this.prisma.civilGuard.findUnique({
+          where: { id },
+          include: {
+            duties: true,
+            department: true,
+            account: { select: { email: true, createdAt: true, updatedAt: true } },
+          },
+        });
+        if (!completeCivilGuard) {
+          throw new NotFoundException('Civil Guard not found');
+        }
+        return completeCivilGuard;
+      } else {
+        const civilGuard = await this.prisma.civilGuard.findUnique({ where: { id } });
+        if (!civilGuard) {
+          throw new NotFoundException('Civil Guard not found');
+        }
+        return civilGuard;
       }
-      return civilGuard;
     } catch (error) {
       console.error(error.message);
       throw new InternalServerErrorException(`Error happened while fetching a Civil Guard with id ${id}.`);

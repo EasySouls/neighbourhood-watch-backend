@@ -68,6 +68,7 @@ export class AuthService {
 
     const accountExists = await this.accountsService.findOneByEmail(email);
     if (accountExists) {
+      this.logger.error(`Account with email ${email} already exists`, 'AuthService::signUp');
       throw new BadRequestException('Account with this email already exists');
     }
 
@@ -76,6 +77,11 @@ export class AuthService {
     if (!civilGuard) {
       throw new NotFoundException('Civil Guard not found in AuthService::signUp');
     }
+
+    this.logger.log(
+      `Creating account for civil guard ${civilGuard.name} with password ${password}`,
+      'AuthService::signUp',
+    );
 
     // Hashing the password
     const saltRounds = 12;
@@ -98,6 +104,7 @@ export class AuthService {
       const { password, ...accountWithoutPassword } = account;
       return accountWithoutPassword;
     } catch (error) {
+      this.logger.error(`Error creating account: ${error.message}`, 'AuthService::signUp');
       throw new Error('Error creating account');
     }
   }

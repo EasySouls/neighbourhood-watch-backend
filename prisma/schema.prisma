@@ -38,7 +38,7 @@ model CivilGuard {
   createdAt    DateTime              @default(now())
   updatedAt    DateTime              @updatedAt
   duties       CivilGuardsOnDuties[]
-  Department   Department?           @relation(fields: [departmentId], references: [id])
+  department   Department?           @relation(fields: [departmentId], references: [id])
   departmentId String?
   authCode     Int                   @unique
 }

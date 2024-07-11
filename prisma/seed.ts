@@ -42,7 +42,7 @@ async function main() {
           create: [
             {
               name: name,
-              Department: { connect: { id: departments[randomInt(9)].id } },
+              department: { connect: { id: departments[randomInt(9)].id } },
               id: faker.string.uuid(),
               createdAt: new Date(),
               authCode: randomInt(999999),
