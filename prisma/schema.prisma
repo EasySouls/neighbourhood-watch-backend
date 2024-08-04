@@ -52,6 +52,7 @@ model Duty {
   id           String                @id @default(cuid())
   name         String
   description  String
+  plateNumber  String?
   startDate    DateTime              @default(now())
   endDate      DateTime?
   type         DutyType

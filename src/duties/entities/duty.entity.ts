@@ -23,6 +23,10 @@ export class Duty {
   type: DutyType;
 
   @IsString()
+  @IsOptional()
+  plateNumber?: string;
+
+  @IsString()
   departmentId: string;
 
   @IsDate()

@@ -8,7 +8,11 @@ import { PrismaService } from 'nestjs-prisma';
 export class DutiesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createDutyDto: CreateDutyDto): Promise<Duty> {
+  async startDuty(createDutyDto: CreateDutyDto, civilGuardId: string): Promise<Duty> {
+    if (civilGuardId === null) {
+      throw new InternalServerErrorException('Civil Guard id is required to start duty.');
+    }
+
     try {
       return await this.prisma.duty.create({
         data: {
@@ -19,6 +23,9 @@ export class DutiesService {
           type: createDutyDto.type,
           Department: {
             connect: { id: createDutyDto.departmentId },
+          },
+          civilGuards: {
+            create: [{ civilGuardId }],
           },
         },
       });

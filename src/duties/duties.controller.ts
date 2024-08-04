@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { DutiesService } from './duties.service';
 import { CreateDutyDto } from './dto/create-duty.dto';
 import { UpdateDutyDto } from './dto/update-duty.dto';
@@ -18,8 +18,8 @@ export class DutiesController {
 
   @Post()
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Create, Duty))
-  create(@Body() createDutyDto: CreateDutyDto) {
-    return this.dutiesService.create(createDutyDto);
+  startDuty(@Request() req, @Body() createDutyDto: CreateDutyDto) {
+    return this.dutiesService.startDuty(createDutyDto, req.user.id);
   }
 
   @Post(':id')
