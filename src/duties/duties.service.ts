@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { CreateDutyDto } from './dto/create-duty.dto';
 import { UpdateDutyDto } from './dto/update-duty.dto';
 import { Duty } from './entities/duty.entity';
@@ -8,21 +8,29 @@ import { PrismaService } from 'nestjs-prisma';
 export class DutiesService {
   constructor(private prisma: PrismaService) {}
 
+  private readonly logger = new Logger(DutiesService.name);
+
   async startDuty(createDutyDto: CreateDutyDto, civilGuardId: string): Promise<Duty> {
+    this.logger.debug(`Incoming request to start new duty for civil guard with id ${civilGuardId}.`);
     if (civilGuardId === null) {
       throw new InternalServerErrorException('Civil Guard id is required to start duty.');
     }
+
+    // For now, the duty automatically belongs to the same department
+    // as the creator of the duty
+    const civilGuard = await this.prisma.civilGuard.findUnique({ where: { id: civilGuardId } });
 
     try {
       return await this.prisma.duty.create({
         data: {
           name: createDutyDto.name,
           description: createDutyDto.description,
+          plateNumber: createDutyDto.plateNumber,
           startDate: createDutyDto.startDate ?? new Date(),
           endDate: createDutyDto.endDate,
           type: createDutyDto.type,
           Department: {
-            connect: { id: createDutyDto.departmentId },
+            connect: { id: civilGuard.departmentId },
           },
           civilGuards: {
             create: [{ civilGuardId }],
@@ -38,6 +46,7 @@ export class DutiesService {
   async stopDuty(id: string): Promise<Duty | null> {
     try {
       const duty = await this.findOne(id);
+      this.logger.log(`Stopping duty with id ${id}.`);
       return this.prisma.duty.update({ where: { id: duty.id }, data: { endDate: new Date() } });
     } catch (error) {
       console.error(error.message);

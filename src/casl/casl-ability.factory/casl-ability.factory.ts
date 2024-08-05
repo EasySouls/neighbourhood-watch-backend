@@ -20,6 +20,10 @@ export class CaslAbilityFactory {
       can(Action.Manage, CivilGuard, { departmentId: civilGuard.departmentId });
       can(Action.Manage, Duty, { departmentId: civilGuard.departmentId });
     } else {
+      // TODO: Update these permissions with one that lets you manage your own duties
+      can(Action.Create, Duty, { departmentId: civilGuard.departmentId });
+      can(Action.Delete, Duty, { departmentId: civilGuard.departmentId });
+
       can(Action.Read, 'all');
     }
 

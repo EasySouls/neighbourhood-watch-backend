@@ -22,6 +22,8 @@ export class Duty {
   @IsEnum(DutyType)
   type: DutyType;
 
+  // TODO: Create an owner field
+
   @IsString()
   @IsOptional()
   plateNumber?: string;

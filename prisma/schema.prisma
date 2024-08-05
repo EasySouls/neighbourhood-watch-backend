@@ -51,7 +51,7 @@ enum DutyType {
 model Duty {
   id           String                @id @default(cuid())
   name         String
-  description  String
+  description  String?
   plateNumber  String?
   startDate    DateTime              @default(now())
   endDate      DateTime?
