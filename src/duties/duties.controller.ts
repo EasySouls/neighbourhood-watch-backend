@@ -28,6 +28,18 @@ export class DutiesController {
     return this.dutiesService.stopDuty(id);
   }
 
+  @Get('civilGuard/:civilGuardId')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, Duty))
+  findAllByCivilGuardId(@Param('civilGuardId') civilGuardId: string) {
+    return this.dutiesService.findAllByCivilGuardId(civilGuardId);
+  }
+
+  @Get('active')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, Duty))
+  findOwnActive(@Request() req) {
+    return this.dutiesService.findOwnActive(req.user.id);
+  }
+
   @Get()
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, Duty))
   findAll() {

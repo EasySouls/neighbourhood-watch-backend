@@ -54,6 +54,26 @@ export class DutiesService {
     }
   }
 
+  async findAllByCivilGuardId(id: string): Promise<Duty[]> {
+    try {
+      return await this.prisma.duty.findMany({ where: { civilGuards: { some: { civilGuardId: id } } } });
+    } catch (error) {
+      console.error(error.message);
+      throw new InternalServerErrorException('Error happened while finding duties.');
+    }
+  }
+
+  async findOwnActive(id: string): Promise<Duty | null> {
+    try {
+      return await this.prisma.duty.findFirst({
+        where: { civilGuards: { some: { civilGuardId: id } }, endDate: null },
+      });
+    } catch (error) {
+      console.error(error.message);
+      throw new InternalServerErrorException('Error happened while finding own active duty.');
+    }
+  }
+
   async findAll(): Promise<Duty[]> {
     try {
       return await this.prisma.duty.findMany();
